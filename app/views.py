@@ -17,11 +17,25 @@ class UserAPIView(APIView):
     def post(self, req):
         ser = UserSerializes(data=req.data)
         ser.is_valid(raise_exception=True)
+        ser.save()
+        return Response({'user': ser.data})
+    def put(self, req, *args, **kwargs):
+        pk = kwargs.get('pk', None)
+        if not pk:
+            return Response({'error': 'Method PUT allowed'})
+        try:
+            instance = User.objects.get(pk=pk)
+        except:
+            return Response({'error': 'Method PUT not allowed'})
 
+        serializer = UserSerializes(data=req.data, instance=instance)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
 
-        new = User.objects.create(
-            name=req.data['name'],
-            email=req.data['email'],
-            password=req.data['password'],
-        )
-        return Response(UserSerializes(new).data)
+        return Response({'user': serializer.data})
+    def delete(self, req, *args, **kwargs):
+        pk = kwargs.get('pk', None)
+        if not pk:
+            return Response({'error': 'Method DELETE allowed'})
+
+        return Response({'user': 'deleted ' + str(pk)})

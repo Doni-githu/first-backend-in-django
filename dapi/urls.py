@@ -21,5 +21,6 @@ from django.conf.urls.static import static
 from app.views import UserAPIView
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/userlist', UserAPIView.as_view()),
+    path('api/userlist/', UserAPIView.as_view()),
+    path('api/userlist/<int:pk>/', UserAPIView.as_view())
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
